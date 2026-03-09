@@ -4,6 +4,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:shoes_app/controlllers/product_controller.dart';
 import 'package:shoes_app/models/product.dart';
 import 'package:shoes_app/utils/app_textstyles.dart';
+import 'package:shoes_app/view/checkout/screens/checkout_screen.dart';
 import 'package:shoes_app/view/widgets/size_selector.dart';
 
 class ProductDetailsScreen extends StatelessWidget {
@@ -151,7 +152,14 @@ class ProductDetailsScreen extends StatelessWidget {
             children: [
               Expanded(
                 child: OutlinedButton(
-                  onPressed: (){}, 
+                  onPressed: () {
+                    productController.addToCart(product.id);
+                    Get.snackbar(
+                      'Added to Cart',
+                      product.name,
+                      snackPosition: SnackPosition.BOTTOM,
+                    );
+                  }, 
                   style: OutlinedButton.styleFrom(
                     padding: EdgeInsets.symmetric(
                       vertical: screenHeight * 0.02,
@@ -172,7 +180,10 @@ class ProductDetailsScreen extends StatelessWidget {
               SizedBox(width: screenWidth*0.04),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: (){}, 
+                  onPressed: () {
+                    productController.addToCart(product.id);
+                    Get.to(() => const CheckoutScreen());
+                  }, 
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(
                       vertical: screenHeight * 0.02,

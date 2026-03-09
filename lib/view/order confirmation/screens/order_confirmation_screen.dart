@@ -44,6 +44,14 @@ class OrderConfirmationScreen extends StatelessWidget {
                   isDark? Colors.grey[400]! : Colors.grey[600]!,
                 ),
               ),
+              const SizedBox(height: 8),
+              Text(
+                'Total Paid: \$${totalAmount.toStringAsFixed(2)}',
+                style: AppTextstyles.withColor(
+                  AppTextstyles.bodyMedium,
+                  Theme.of(context).primaryColor,
+                ),
+              ),
               const SizedBox(height: 48),
               ElevatedButton(
                 onPressed: (){

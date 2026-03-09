@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shoes_app/controlllers/product_controller.dart';
 import 'package:shoes_app/utils/app_textstyles.dart';
 
 class FilterBottomSheet {
   static void show(BuildContext context){
+    final productController = Get.find<ProductController>();
+    final minController = TextEditingController();
+    final maxController = TextEditingController();
+    String selectedCategory = productController.selectedCategory;
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     showModalBottomSheet(
@@ -53,6 +59,7 @@ class FilterBottomSheet {
                 children: [
                   Expanded(
                     child: TextField(
+                      controller: minController,
                       decoration: InputDecoration(
                         hintText: 'Min',
                         prefixText: '\$',
@@ -70,6 +77,7 @@ class FilterBottomSheet {
                   const SizedBox(width: 16),
                    Expanded(
                     child: TextField(
+                      controller: maxController,
                       decoration: InputDecoration(
                         hintText: 'Max',
                         prefixText: '\$',
@@ -101,17 +109,23 @@ class FilterBottomSheet {
                 children: [
                   'All',
                   'Nike',
-                  'Addidas',
+                  'Adidas',
                   'Puma',
                 ].map((category) => FilterChip(
                   label: Text(category),
-                  selected: category == 'All',
-                  onSelected: (selected){},
+                  selected: category == selectedCategory,
+                  onSelected: (selected){
+                    setState(() {
+                      if (selected) {
+                        selectedCategory = category;
+                      }
+                    });
+                  },
                   // ignore: deprecated_member_use
                   backgroundColor: Theme.of(context).primaryColor.withOpacity(0.2),
                   labelStyle: AppTextstyles.withColor(
                     AppTextstyles.bodyMedium,
-                    category == 'All'
+                    category == selectedCategory
                       ? Theme.of(context).primaryColor
                       : Theme.of(context).textTheme.bodyLarge!.color!,
                     ),
@@ -121,7 +135,17 @@ class FilterBottomSheet {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () => Get.back(), 
+                  onPressed: () {
+                    final minPrice = double.tryParse(minController.text.trim()) ?? 0;
+                    final maxPrice = double.tryParse(maxController.text.trim()) ?? 100000;
+
+                    productController.setCategory(selectedCategory);
+                    productController.applyPriceFilter(
+                      minPrice: minPrice,
+                      maxPrice: maxPrice,
+                    );
+                    Get.back();
+                  }, 
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).primaryColor,
                     padding: const EdgeInsets.symmetric(vertical: 16),

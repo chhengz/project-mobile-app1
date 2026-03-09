@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shoes_app/controlllers/product_controller.dart';
 import 'package:shoes_app/utils/app_textstyles.dart';
 
 class CustomSearchBar extends StatelessWidget {
@@ -6,10 +8,12 @@ class CustomSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ProductController productController = Get.find<ProductController>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: EdgeInsets.all(16),
       child: TextField(
+        onChanged: productController.setSearchQuery,
         style: AppTextstyles.withColor(
           AppTextstyles.buttonMedium, 
           Theme.of(context).textTheme.bodyLarge?.color?? Colors.black,

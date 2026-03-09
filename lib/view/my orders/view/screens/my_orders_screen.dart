@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shoes_app/controlllers/order_controller.dart';
 import 'package:shoes_app/utils/app_textstyles.dart';
 import 'package:shoes_app/view/my%20orders/model/order.dart';
-import 'package:shoes_app/view/my%20orders/repository/order_repository.dart';
 import 'package:shoes_app/view/my%20orders/view/widgets/order_card.dart';
 
 class MyOrdersScreen extends StatelessWidget {
-  final OrderRepository _repository = OrderRepository();
+  final OrderController _orderController = Get.find<OrderController>();
   MyOrdersScreen({super.key});
 
   @override
@@ -53,7 +53,11 @@ class MyOrdersScreen extends StatelessWidget {
     );
   }
   Widget _buildOrderList(BuildContext context,OrderStatus status){
-    final orders = _repository.getOrdersByStatus(status);
+    final orders = _orderController.ordersByStatus(status);
+
+    if (orders.isEmpty) {
+      return const Center(child: Text('No orders found'));
+    }
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
@@ -61,7 +65,11 @@ class MyOrdersScreen extends StatelessWidget {
       itemBuilder: (context,index)=> OrderCard(
         order: orders[index],
         onViewDetails: () {
-          
+          Get.snackbar(
+            'Order #${orders[index].OrderNumber}',
+            'Status: ${orders[index].statusString}',
+            snackPosition: SnackPosition.BOTTOM,
+          );
         },
       ),
     );

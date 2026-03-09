@@ -17,7 +17,7 @@ class ProductGrid extends StatelessWidget {
         return const Center(child: CircularProgressIndicator());
       }
 
-      if (productController.products.isEmpty) {
+      if (productController.filteredProducts.isEmpty) {
         return const Center(child: Text('No products found'));
       }
 
@@ -29,9 +29,9 @@ class ProductGrid extends StatelessWidget {
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
         ),
-        itemCount: productController.products.length,
+        itemCount: productController.filteredProducts.length,
         itemBuilder: (context,index){
-          final Product product = productController.products[index];
+          final Product product = productController.filteredProducts[index];
           return GestureDetector(
             onTap: ()=> Navigator.push(context,
             MaterialPageRoute(

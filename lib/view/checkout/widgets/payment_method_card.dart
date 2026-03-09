@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shoes_app/utils/app_textstyles.dart';
 
 class PaymentMethodCard extends StatelessWidget {
@@ -59,7 +60,13 @@ class PaymentMethodCard extends StatelessWidget {
               ),
               ),
               IconButton(
-                onPressed: (){}, 
+                onPressed: () {
+                  Get.snackbar(
+                    'Payment Method',
+                    'Payment method editor will be added next.',
+                    snackPosition: SnackPosition.BOTTOM,
+                  );
+                }, 
                 icon: Icon(
                   Icons.edit_outlined,
                   color: Theme.of(context).primaryColor,

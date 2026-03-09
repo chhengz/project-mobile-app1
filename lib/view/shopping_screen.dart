@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shoes_app/controlllers/product_controller.dart';
 import 'package:shoes_app/utils/app_textstyles.dart';
 import 'package:shoes_app/view/widgets/category_chips.dart';
 import 'package:shoes_app/view/widgets/filter_bottom_sheet.dart';
@@ -9,6 +11,7 @@ class ShoppingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final productController = Get.find<ProductController>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
@@ -23,7 +26,14 @@ class ShoppingScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            onPressed: (){}, 
+            onPressed: () {
+              productController.setSearchQuery('');
+              Get.snackbar(
+                'Search',
+                'Use search field below to filter products.',
+                snackPosition: SnackPosition.BOTTOM,
+              );
+            }, 
             icon: Icon(
               Icons.search,
               color:  isDark? Colors.white : Colors.black,

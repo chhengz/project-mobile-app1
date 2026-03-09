@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shoes_app/utils/app_textstyles.dart';
 
 class ContactSupportSection extends StatelessWidget {
@@ -41,7 +42,13 @@ class ContactSupportSection extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           ElevatedButton(
-            onPressed: (){}, 
+            onPressed: () {
+              Get.snackbar(
+                'Support',
+                'Please email: support@justdo.store',
+                snackPosition: SnackPosition.BOTTOM,
+              );
+            }, 
             style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).primaryColor,
               padding: const EdgeInsets.symmetric(horizontal: 32,vertical: 12),

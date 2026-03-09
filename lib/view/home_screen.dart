@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shoes_app/controlllers/auth_controller.dart';
 import 'package:shoes_app/controlllers/theme_controller.dart';
 import 'package:shoes_app/view/all_products_screen.dart';
 import 'package:shoes_app/view/cart_screen.dart';
@@ -14,6 +15,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authController = Get.find<AuthController>();
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body:  SafeArea(
@@ -32,11 +34,13 @@ class HomeScreen extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Hello Narith',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
+                       Obx(
+                        () => Text(
+                          'Hello ${authController.currentUser?.fullName.split(' ').first ?? 'Guest'}',
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 14,
+                          ),
                         ),
                       ),
                        Text(

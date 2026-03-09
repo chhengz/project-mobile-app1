@@ -33,16 +33,18 @@ class CartScreen extends StatelessWidget {
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: productController.products.length,
-              itemBuilder: (context, index)=> _buildCartItem(
-                context,
-                productController.products[index],
-              ),
-            ),
+            child: productController.cartProducts.isEmpty
+                ? const Center(child: Text('Your cart is empty'))
+                : ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: productController.cartProducts.length,
+                    itemBuilder: (context, index)=> _buildCartItem(
+                      context,
+                      productController.cartProducts[index],
+                    ),
+                  ),
           ),
-          _buildCartSummery(context, productController.products),
+          _buildCartSummery(context, productController),
         ],
       ),
     ));
@@ -122,7 +124,7 @@ class CartScreen extends StatelessWidget {
                         child: Row(
                           children: [
                             IconButton(
-                              onPressed: (){}, 
+                              onPressed: () => Get.find<ProductController>().decreaseQty(product.id), 
                             icon: Icon(
                               Icons.remove,
                               size: 20,
@@ -130,14 +132,14 @@ class CartScreen extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              '1',
+                              '${Get.find<ProductController>().quantityFor(product.id)}',
                               style: AppTextstyles.withColor(
                                 AppTextstyles.bodyLarge,
                                 Theme.of(context).primaryColor,
                               ),
                             ),
                             IconButton(
-                              onPressed: (){}, 
+                              onPressed: () => Get.find<ProductController>().increaseQty(product.id), 
                             icon: Icon(
                               Icons.add,
                               size: 20,
@@ -228,7 +230,7 @@ class CartScreen extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: (){
-                      // add delete logic 
+                      Get.find<ProductController>().removeFromCart(product.id);
                       Get.back();
                     },
                     style: ElevatedButton.styleFrom(
@@ -255,8 +257,8 @@ class CartScreen extends StatelessWidget {
       barrierColor: Colors.black54,
     );
   }
-  Widget _buildCartSummery(BuildContext context, List<Product> products){
-    final total = products.fold<double>(0, (sum, item) => sum + item.price);
+  Widget _buildCartSummery(BuildContext context, ProductController productController){
+    final total = productController.cartSubtotal;
 
     return Container(
       padding: const EdgeInsets.all(24),
@@ -280,7 +282,7 @@ class CartScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Total (${products.length} items)',
+                'Total (${productController.cartItemCount} items)',
                 style: AppTextstyles.withColor(
                 AppTextstyles.bodyMedium,
                 Theme.of(context).textTheme.bodyLarge!.color!,
@@ -299,7 +301,9 @@ class CartScreen extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: ()=> Get.to(()=>const  CheckoutScreen()),
+              onPressed: productController.cartProducts.isEmpty
+                  ? null
+                  : ()=> Get.to(()=>const  CheckoutScreen()),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).primaryColor,
                 padding: const EdgeInsets.symmetric(vertical: 16),

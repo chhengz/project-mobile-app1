@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shoes_app/utils/app_textstyles.dart';
 
 class AddressCard extends StatelessWidget {
@@ -51,7 +52,13 @@ class AddressCard extends StatelessWidget {
                 ),
               ),
               IconButton(
-                onPressed: (){}, 
+                onPressed: () {
+                  Get.snackbar(
+                    'Shipping Address',
+                    'Edit from Shipping Address page in Account.',
+                    snackPosition: SnackPosition.BOTTOM,
+                  );
+                }, 
                 icon: Icon(
                   Icons.edit_outlined,
                   color: Theme.of(context).primaryColor,

@@ -5,14 +5,26 @@ import 'package:shoes_app/view/notifications/models/notification_type.dart';
 import 'package:shoes_app/view/notifications/repositories/notification_repository.dart';
 import 'package:shoes_app/view/notifications/utils/notification_utils.dart';
 
-class NotificationsScreen extends StatelessWidget {
+class NotificationsScreen extends StatefulWidget {
+  const NotificationsScreen({super.key});
+
+  @override
+  State<NotificationsScreen> createState() => _NotificationsScreenState();
+}
+
+class _NotificationsScreenState extends State<NotificationsScreen> {
   final NotificationRepository _repository = NotificationRepository();
-    NotificationsScreen({super.key});
+  late List<NotificationItem> notifications;
+
+  @override
+  void initState() {
+    super.initState();
+    notifications = _repository.getNotifications();
+  }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final notifications = _repository.getNotifications();
 
     return Scaffold(
       appBar: AppBar(
@@ -32,7 +44,7 @@ class NotificationsScreen extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: (){}, 
+            onPressed: _markAllAsRead,
             child: Text(
               'Mark all as read',
               style: AppTextstyles.withColor(
@@ -102,9 +114,39 @@ class NotificationsScreen extends StatelessWidget {
                 isDark? Colors.grey[400]! : Colors.grey[600]!,
               ),
             ),
+            const SizedBox(height: 6),
+            Text(
+              notification.time,
+              style: AppTextstyles.withColor(
+                AppTextstyles.bodySmall,
+                isDark? Colors.grey[500]! : Colors.grey[500]!,
+              ),
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  void _markAllAsRead() {
+    setState(() {
+      notifications = notifications
+          .map(
+            (item) => NotificationItem(
+              title: item.title,
+              message: item.message,
+              time: item.time,
+              type: item.type,
+              isRead: true,
+            ),
+          )
+          .toList();
+    });
+
+    Get.snackbar(
+      'Done',
+      'All notifications marked as read.',
+      snackPosition: SnackPosition.BOTTOM,
     );
   }
 }

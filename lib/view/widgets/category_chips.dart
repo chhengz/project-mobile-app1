@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shoes_app/controlllers/product_controller.dart';
 import 'package:shoes_app/utils/app_textstyles.dart';
 
 class CategoryChips extends StatefulWidget {
@@ -9,10 +11,11 @@ class CategoryChips extends StatefulWidget {
 }
  class _CategoryChipsState extends State<CategoryChips> {
    int selectedIndex = 0;
-   final categories = ['All', 'Nike', 'Addidas', 'Puma'];
+  final categories = ['All', 'Nike', 'Adidas', 'Puma'];
 
   @override
   Widget build(BuildContext context) {
+    final ProductController productController = Get.find<ProductController>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -42,6 +45,7 @@ class CategoryChips extends StatefulWidget {
                   setState(() {
                     selectedIndex = selected ? index : selectedIndex;
                   });
+                  productController.setCategory(categories[selectedIndex]);
                 },
                 selectedColor: Theme.of(context).primaryColor,
                 backgroundColor: isDark? Colors.grey[800]: Colors.grey[100],

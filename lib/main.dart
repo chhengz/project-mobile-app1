@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:shoes_app/controlllers/auth_controller.dart';
 import 'package:shoes_app/controlllers/navigation_controller.dart';
+import 'package:shoes_app/controlllers/order_controller.dart';
 import 'package:shoes_app/controlllers/product_controller.dart';
 import 'package:shoes_app/controlllers/theme_controller.dart';
 import 'package:shoes_app/utils/app_themes.dart';
@@ -16,6 +17,7 @@ void main() async {
   Get.put(AuthController());
   Get.put(NavigationController());
   Get.put(ProductController());
+  Get.put(OrderController());
   runApp(const MyApp());
 }
 

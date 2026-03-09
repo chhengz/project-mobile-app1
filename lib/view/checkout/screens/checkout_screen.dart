@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
+import 'package:shoes_app/controlllers/order_controller.dart';
+import 'package:shoes_app/controlllers/product_controller.dart';
 import 'package:shoes_app/utils/app_textstyles.dart';
 import 'package:shoes_app/view/checkout/widgets/address_card.dart';
 import 'package:shoes_app/view/checkout/widgets/checkout_bottom_bar.dart';
@@ -13,6 +14,8 @@ class CheckoutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final productController = Get.find<ProductController>();
+    final orderController = Get.find<OrderController>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
@@ -51,12 +54,29 @@ class CheckoutScreen extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: CheckoutBottomBar(
-        totalAmount: 300,
+        totalAmount: productController.cartTotal,
         onPlaceOrder: (){
-          final orderNumber = 'ORD${DateTime.now().microsecondsSinceEpoch.toString().substring(7)}';
+          if (productController.cartProducts.isEmpty) {
+            Get.snackbar(
+              'Cart Empty',
+              'Add products before placing an order.',
+              snackPosition: SnackPosition.BOTTOM,
+            );
+            return;
+          }
+
+          orderController.placeOrder(
+            itemCount: productController.cartItemCount,
+            totalAmount: productController.cartTotal,
+            imageUrl: productController.cartProducts.first.imageUrl,
+          );
+
+          final createdOrder = orderController.orders.first;
+          productController.clearCart();
+
           Get.to(()=> OrderConfirmationScreen(
-            orderNumber: orderNumber,
-            totalAmount: 300,
+            orderNumber: createdOrder.OrderNumber,
+            totalAmount: createdOrder.totalAmount,
            ),);
         },
       ),

@@ -25,7 +25,13 @@ class WishlistScreen extends StatelessWidget {
           ),
           actions: [
             IconButton(
-              onPressed: (){},
+              onPressed: () {
+                Get.snackbar(
+                  'Search',
+                  'Use Home or Shopping search to filter products.',
+                  snackPosition: SnackPosition.BOTTOM,
+                );
+              },
               icon: Icon(
                 Icons.search,
                 color: isDark? Colors.white : Colors.black,
@@ -93,7 +99,16 @@ class WishlistScreen extends StatelessWidget {
             ],
           ),
           ElevatedButton(
-            onPressed: (){}, 
+            onPressed: () {
+              for (final product in productController.favoriteProducts) {
+                productController.addToCart(product.id);
+              }
+              Get.snackbar(
+                'Added',
+                'All wishlist items added to cart.',
+                snackPosition: SnackPosition.BOTTOM,
+              );
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).primaryColor,
               padding: const EdgeInsets.symmetric(
@@ -176,7 +191,14 @@ class WishlistScreen extends StatelessWidget {
                       Row(
                         children: [
                           IconButton(
-                            onPressed: (){}, 
+                            onPressed: () {
+                              productController.addToCart(product.id);
+                              Get.snackbar(
+                                'Added to Cart',
+                                product.name,
+                                snackPosition: SnackPosition.BOTTOM,
+                              );
+                            }, 
                             icon: Icon(
                               Icons.shopping_cart_outlined,
                               color: Theme.of(context).primaryColor,
