@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "token": "7962a51a1f186a50ed002193f58a21a6a918b8b91ed47682",
+    "userId": "7ff83dcc-d087-4b0d-b17b-813d48a26802",
+    "createdAt": "2026-03-09T04:15:33.453Z"
+  },
+  {
+    "token": "9e1ba93063fb7ac2f5c711a18048d0e719efdf8b5b32275d",
+    "userId": "7ff83dcc-d087-4b0d-b17b-813d48a26802",
+    "createdAt": "2026-03-09T04:16:02.172Z"
+  }
+]

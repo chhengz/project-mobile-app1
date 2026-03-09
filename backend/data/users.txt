@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "id": "7ff83dcc-d087-4b0d-b17b-813d48a26802",
+    "fullName": "test",
+    "email": "test@email.com",
+    "passwordHash": "44af94f066a9df03cfa63d6fc9f8ce7b:ec034e77949665c94febf244a2f77888d50a41953d5aa7f9fdcaae672412c1b7fafee7f595974dc743ffc0b647352fa3b64fed44f3e11ae1d394e0ee80cf6393",
+    "phone": "",
+    "avatarUrl": "",
+    "createdAt": "2026-03-09T04:15:33.315Z",
+    "updatedAt": "2026-03-09T04:15:33.315Z"
+  }
+]

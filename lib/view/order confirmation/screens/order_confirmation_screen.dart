@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shoes_app/utils/app_textstyles.dart';
 import 'package:shoes_app/view/main_screen.dart';
-import 'package:shoes_app/view/my%20orders/view/screens/my_orders_screen.dart';
 
 class OrderConfirmationScreen extends StatelessWidget {
   final String orderNumber;
@@ -55,7 +54,7 @@ class OrderConfirmationScreen extends StatelessWidget {
               const SizedBox(height: 48),
               ElevatedButton(
                 onPressed: (){
-                  Get.to(()=>MyOrdersScreen());
+                  Get.offAll(()=> const MainScreen());
                 }, 
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).primaryColor,
@@ -65,25 +64,12 @@ class OrderConfirmationScreen extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  'Track Order',
+                  'Done',
                   style: AppTextstyles.withColor(
                     AppTextstyles.buttonMedium,
                     Colors.white,
                   ),
                 )
-              ),
-              const SizedBox(height: 16),
-              TextButton(
-                onPressed: (){
-                  Get.offAll(()=>  const MainScreen());
-                }, 
-                child: Text(
-                  'Continue Shopping',
-                  style: AppTextstyles.withColor(
-                    AppTextstyles.buttonMedium,
-                    Theme.of(context).primaryColor,
-                  ),
-                ),
               ),
             ],
           ),

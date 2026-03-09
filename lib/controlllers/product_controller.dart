@@ -80,7 +80,7 @@ class ProductController extends GetxController {
 
       _products.assignAll(list);
     } catch (_) {
-      _products.clear();
+      // Keep previously loaded products if a transient fetch failure happens.
     } finally {
       _isLoading.value = false;
     }
