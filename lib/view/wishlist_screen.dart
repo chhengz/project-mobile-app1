@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shoes_app/controlllers/product_controller.dart';
 import 'package:shoes_app/models/product.dart';
 import 'package:shoes_app/utils/app_textstyles.dart';
 
@@ -7,55 +9,59 @@ class WishlistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ProductController productController = Get.find<ProductController>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        title: Text(
-          'My Wistlist',
-          style: AppTextstyles.withColor(
-            AppTextstyles.h3, 
-            isDark? Colors.white : Colors.black,
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: (){}, 
-            icon: Icon(
-              Icons.search,
-              color: isDark? Colors.white : Colors.black,
+    return Obx(
+      () => Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        appBar: AppBar(
+          title: Text(
+            'My Wistlist',
+            style: AppTextstyles.withColor(
+              AppTextstyles.h3,
+              isDark? Colors.white : Colors.black,
             ),
           ),
-        ],
-      ),
-      body: CustomScrollView(
-        slivers: [
-          //summmary section
-          SliverToBoxAdapter(
-            child: _buildSummarySection(context),
-          ),
-
-          //whistlist items
-          SliverPadding(
-            padding: const EdgeInsets.all(16),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) => _buildWishlistItem(
-                  context,
-                  products.where((p)=> p.isFavorite).toList()[index],
-                ),
-                childCount: products.where((p)=> p.isFavorite).length,
+          actions: [
+            IconButton(
+              onPressed: (){},
+              icon: Icon(
+                Icons.search,
+                color: isDark? Colors.white : Colors.black,
               ),
             ),
-          ),
-        ],
+          ],
+        ),
+        body: productController.favoriteProducts.isEmpty
+            ? const Center(child: Text('No favorite products yet'))
+            : CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: _buildSummarySection(context),
+                  ),
+
+                  SliverPadding(
+                    padding: const EdgeInsets.all(16),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) => _buildWishlistItem(
+                          context,
+                          productController.favoriteProducts[index],
+                        ),
+                        childCount: productController.favoriteProducts.length,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
       ),
     );
   }
   Widget _buildSummarySection(BuildContext context){
+    final ProductController productController = Get.find<ProductController>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final favoriteProducts = products.where((p) => p.isFavorite).length;
+    final favoriteProducts = productController.favoriteProducts.length;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -72,7 +78,7 @@ class WishlistScreen extends StatelessWidget {
               Text(
             '$favoriteProducts Items',
             style: AppTextstyles.withColor(
-              AppTextstyles.h2, 
+              AppTextstyles.h2,
               Theme.of(context).textTheme.bodyLarge!.color!,
             ),
           ),
@@ -80,7 +86,7 @@ class WishlistScreen extends StatelessWidget {
           Text(
             'in your wishlist',
             style: AppTextstyles.withColor(
-              AppTextstyles.bodyMedium , 
+              AppTextstyles.bodyMedium ,
               isDark? Colors.grey[400]! : Colors.grey[600]!,
                ),
              ),
@@ -108,6 +114,7 @@ class WishlistScreen extends StatelessWidget {
     );
   }
   Widget _buildWishlistItem(BuildContext context,Product product){
+    final ProductController productController = Get.find<ProductController>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
@@ -176,7 +183,7 @@ class WishlistScreen extends StatelessWidget {
                             ),
                           ),
                           IconButton(
-                            onPressed: (){}, 
+                            onPressed: () => productController.toggleFavorite(product.id),
                             icon: Icon(
                               Icons.delete_outline,
                               color: isDark? Colors.grey[400]: Colors.grey[600],

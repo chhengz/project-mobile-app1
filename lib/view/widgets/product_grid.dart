@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shoes_app/controlllers/product_controller.dart';
 import 'package:shoes_app/models/product.dart';
 import 'package:shoes_app/view/product_details_screen.dart';
 import 'package:shoes_app/view/widgets/product_card.dart';
@@ -8,17 +10,28 @@ class ProductGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      padding: const EdgeInsets.all(16),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.75,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
+    final ProductController productController = Get.find<ProductController>();
+
+    return Obx(() {
+      if (productController.isLoading) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      if (productController.products.isEmpty) {
+        return const Center(child: Text('No products found'));
+      }
+
+      return GridView.builder(
+        padding: const EdgeInsets.all(16),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 0.75,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
         ),
-        itemCount: products.length,
+        itemCount: productController.products.length,
         itemBuilder: (context,index){
-          final product = products[index];
+          final Product product = productController.products[index];
           return GestureDetector(
             onTap: ()=> Navigator.push(context,
             MaterialPageRoute(
@@ -29,6 +42,7 @@ class ProductGrid extends StatelessWidget {
             child: ProductCard(product: product),
           );
         },
-    );
+      );
+    });
   }
 }

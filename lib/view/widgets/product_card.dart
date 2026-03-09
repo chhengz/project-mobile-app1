@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shoes_app/controlllers/product_controller.dart';
 import 'package:shoes_app/models/product.dart';
 import 'package:shoes_app/utils/app_textstyles.dart';
 
@@ -8,6 +10,7 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ProductController productController = Get.find<ProductController>();
     final screenWidth = MediaQuery.of(context).size.width;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
@@ -56,7 +59,7 @@ class ProductCard extends StatelessWidget {
                     isDark? Colors.grey[400]: Colors.grey,
                   ),
                   onPressed: () {
-                    
+                    productController.toggleFavorite(product.id);
                   },
                 ),
               ),

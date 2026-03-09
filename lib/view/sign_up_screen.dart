@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shoes_app/controlllers/auth_controller.dart';
 import 'package:shoes_app/utils/app_textstyles.dart';
 import 'package:shoes_app/view/main_screen.dart';
 import 'package:shoes_app/view/signin_screen.dart';
@@ -15,6 +16,7 @@ class SignUpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AuthController authController = Get.find<AuthController>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return  Scaffold(
       body: SafeArea(
@@ -112,21 +114,34 @@ class SignUpScreen extends StatelessWidget {
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => Get.off(()=> const MainScreen()),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).primaryColor,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ), 
-                  child: Text(
-                    'Sign Up',
-                    style: AppTextstyles.withColor(
-                      AppTextstyles.buttonMedium, 
-                      Colors.white,
-                    ),
+                child: Obx(
+                  () => ElevatedButton(
+                    onPressed: authController.isLoading
+                        ? null
+                        : () => _handleSignUp(authController),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ), 
+                    child: authController.isLoading
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : Text(
+                            'Sign Up',
+                            style: AppTextstyles.withColor(
+                              AppTextstyles.buttonMedium,
+                              Colors.white,
+                            ),
+                          ),
                   ),
                 ),
               ),
@@ -157,6 +172,35 @@ class SignUpScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _handleSignUp(AuthController authController) async {
+    if (_passwordController.text != _ConfirmPasswordController.text) {
+      Get.snackbar(
+        'Sign Up Failed',
+        'Password and Confirm Password do not match.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    final ok = await authController.register(
+      fullName: _nameController.text.trim(),
+      email: _emailController.text.trim(),
+      password: _passwordController.text,
+      phone: '',
+    );
+
+    if (ok) {
+      Get.off(()=> const MainScreen());
+      return;
+    }
+
+    Get.snackbar(
+      'Sign Up Failed',
+      'Could not create account. Check backend and input values.',
+      snackPosition: SnackPosition.BOTTOM,
     );
   }
 }

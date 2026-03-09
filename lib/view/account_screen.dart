@@ -14,7 +14,6 @@ class AccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
@@ -48,63 +47,68 @@ class AccountScreen extends StatelessWidget {
     );
   }
   Widget _buildProfileSection(BuildContext context){
+    final AuthController authController = Get.find<AuthController>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: isDark? Colors.grey[850] : Colors.grey[100],
-        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(24),),
-      ),
-      child: Column(
-        children: [
-          const CircleAvatar(
-            radius: 50,
-            backgroundImage: AssetImage('lib/images/narith.png'),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Keo Sovannarith',
-            style:AppTextstyles.withColor(
-              AppTextstyles.h2, 
-              Theme.of(context).textTheme.bodyLarge!.color!,
+    return Obx(() {
+      final user = authController.currentUser;
+
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: isDark? Colors.grey[850] : Colors.grey[100],
+          borderRadius: const BorderRadius.vertical(bottom: Radius.circular(24),),
+        ),
+        child: Column(
+          children: [
+            const CircleAvatar(
+              radius: 50,
+              backgroundImage: AssetImage('lib/images/narith.png'),
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'keosovannarith@gmail.com',
-            style:AppTextstyles.withColor(
-              AppTextstyles.bodyMedium, 
-              isDark? Colors.grey[400]! : Colors.grey[600]!,
-            ),
-          ),
-          const SizedBox(height: 16),
-          OutlinedButton(
-            onPressed: () => Get.to(() =>const EditProfileScreen()),
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 32,
-                vertical: 12,
-              ),
-              side: BorderSide(
-                color: isDark? Colors.white70 : Colors.black12,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ), 
-            child: Text(
-              'Edit Profile',
-              style: AppTextstyles.withColor(
-                AppTextstyles.buttonMedium, 
+            const SizedBox(height: 16),
+            Text(
+              user?.fullName ?? 'Guest User',
+              style:AppTextstyles.withColor(
+                AppTextstyles.h2,
                 Theme.of(context).textTheme.bodyLarge!.color!,
               ),
             ),
-          ),
-        ],
-      ),
-    );
+            const SizedBox(height: 4),
+            Text(
+              user?.email ?? 'No email',
+              style:AppTextstyles.withColor(
+                AppTextstyles.bodyMedium,
+                isDark? Colors.grey[400]! : Colors.grey[600]!,
+              ),
+            ),
+            const SizedBox(height: 16),
+            OutlinedButton(
+              onPressed: () => Get.to(() =>const EditProfileScreen()),
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 12,
+                ),
+                side: BorderSide(
+                  color: isDark? Colors.white70 : Colors.black12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Text(
+                'Edit Profile',
+                style: AppTextstyles.withColor(
+                  AppTextstyles.buttonMedium,
+                  Theme.of(context).textTheme.bodyLarge!.color!,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    });
   }
   Widget _buildMenuSection(BuildContext context){
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -225,9 +229,9 @@ class AccountScreen extends StatelessWidget {
                 const SizedBox(width: 16),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: (){
+                    onPressed: () async {
                       final AuthController authController = Get.find<AuthController>();
-                      authController.logout();
+                      await authController.logout();
                       Get.offAll(()=>SigninScreen());
                     },
                     style: ElevatedButton.styleFrom(

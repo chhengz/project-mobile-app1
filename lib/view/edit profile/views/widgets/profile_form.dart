@@ -1,13 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shoes_app/controlllers/auth_controller.dart';
 import 'package:shoes_app/utils/app_textstyles.dart';
 import 'package:shoes_app/view/widgets/custom_textfield.dart';
 
-class ProfileForm extends StatelessWidget {
+class ProfileForm extends StatefulWidget {
   const ProfileForm({super.key});
 
   @override
+  State<ProfileForm> createState() => _ProfileFormState();
+}
+
+class _ProfileFormState extends State<ProfileForm> {
+  late final TextEditingController _fullNameController;
+  late final TextEditingController _emailController;
+  late final TextEditingController _phoneController;
+
+  @override
+  void initState() {
+    super.initState();
+    final authController = Get.find<AuthController>();
+    final user = authController.currentUser;
+    _fullNameController = TextEditingController(text: user?.fullName ?? '');
+    _emailController = TextEditingController(text: user?.email ?? '');
+    _phoneController = TextEditingController(text: user?.phone ?? '');
+  }
+
+  @override
+  void dispose() {
+    _fullNameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final AuthController authController = Get.find<AuthController>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -27,10 +56,10 @@ class ProfileForm extends StatelessWidget {
                 ),
               ],
             ),
-           child: const CustomTextfield(
+           child: CustomTextfield(
             label: 'Full Name', prefixIcon: 
             Icons.person_outlined,
-            initialValue: 'Keo Sovannarith',
+            controller: _fullNameController,
             ), 
           ),
           const SizedBox(height: 16),
@@ -48,10 +77,10 @@ class ProfileForm extends StatelessWidget {
                 ),
               ],
             ),
-            child: const CustomTextfield(
+            child: CustomTextfield(
               label: 'Email', 
               prefixIcon: Icons.email_outlined,
-              initialValue: 'keosovannarith@gmail.com',
+              controller: _emailController,
               keyboardType: TextInputType.emailAddress,
             ),
           ),
@@ -70,39 +99,72 @@ class ProfileForm extends StatelessWidget {
                 ),
               ],
             ),
-            child: const CustomTextfield(
+            child: CustomTextfield(
               label: 'Phone Number', 
               prefixIcon: Icons.phone_outlined,
-              initialValue: '012345678',
+              controller: _phoneController,
               keyboardType: TextInputType.phone,
             ),
           ),
           const SizedBox(height: 32),
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton(
-              onPressed: (){
-                Get.back();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).primaryColor,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+            child: Obx(
+              () => ElevatedButton(
+                onPressed: authController.isLoading ? null : _saveProfile,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: authController.isLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : Text(
+                        'Save Changes',
+                        style: AppTextstyles.withColor(
+                          AppTextstyles.buttonMedium,
+                          Colors.white,
+                        ),
+                      ),
               ),
-            ),
-             child: Text(
-              'Save Changes',
-              style: AppTextstyles.withColor(
-                AppTextstyles.buttonMedium,
-                Colors.white,
-              ),
-            )
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> _saveProfile() async {
+    final authController = Get.find<AuthController>();
+    final ok = await authController.updateProfile(
+      fullName: _fullNameController.text.trim(),
+      phone: _phoneController.text.trim(),
+    );
+
+    if (ok) {
+      Get.back();
+      Get.snackbar(
+        'Success',
+        'Profile updated successfully.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    Get.snackbar(
+      'Update Failed',
+      'Could not update profile right now.',
+      snackPosition: SnackPosition.BOTTOM,
     );
   }
 }

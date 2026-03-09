@@ -15,6 +15,7 @@ class SigninScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AuthController authController = Get.find<AuthController>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
@@ -89,21 +90,34 @@ class SigninScreen extends StatelessWidget {
               const SizedBox(height:24),   
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _handleSignIn, 
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).primaryColor,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                child: Obx(
+                  () => ElevatedButton(
+                    onPressed: authController.isLoading
+                        ? null
+                        : () => _handleSignIn(authController),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
-                  ),
-                  child: Text(
-                    'Sign In',
-                    style: AppTextstyles.withColor(
-                      AppTextstyles.buttonMedium, 
-                      Colors.white
-                    ),
+                    child: authController.isLoading
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : Text(
+                            'Sign In',
+                            style: AppTextstyles.withColor(
+                              AppTextstyles.buttonMedium,
+                              Colors.white,
+                            ),
+                          ),
                   ),
                 ),
               ),       
@@ -137,9 +151,21 @@ class SigninScreen extends StatelessWidget {
     );
   }
   // sign in button
-  void _handleSignIn(){
-    final AuthController authController = Get.find<AuthController>();
-    authController.login();
-    Get.offAll(()=> const MainScreen());
+  Future<void> _handleSignIn(AuthController authController) async {
+    final ok = await authController.login(
+      email: _emailController.text.trim(),
+      password: _passwordController.text,
+    );
+
+    if (ok) {
+      Get.offAll(()=> const MainScreen());
+      return;
+    }
+
+    Get.snackbar(
+      'Login Failed',
+      'Invalid credentials or backend not reachable.',
+      snackPosition: SnackPosition.BOTTOM,
+    );
   }
 }

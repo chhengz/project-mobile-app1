@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/instance_manager.dart';
+import 'package:get/state_manager.dart';
+import 'package:shoes_app/controlllers/product_controller.dart';
 import 'package:shoes_app/models/product.dart';
 import 'package:shoes_app/utils/app_textstyles.dart';
 import 'package:shoes_app/view/checkout/screens/checkout_screen.dart';
@@ -10,8 +12,9 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ProductController productController = Get.find<ProductController>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Scaffold(
+    return Obx(() => Scaffold(
       appBar: AppBar(
         leading: IconButton(
           onPressed: ()=> Get.back(), 
@@ -32,17 +35,17 @@ class CartScreen extends StatelessWidget {
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(16),
-              itemCount: products.length,
+              itemCount: productController.products.length,
               itemBuilder: (context, index)=> _buildCartItem(
                 context,
-                products[index],
+                productController.products[index],
               ),
             ),
           ),
-          _buildCartSummery(context),
+          _buildCartSummery(context, productController.products),
         ],
       ),
-    );
+    ));
   }
   Widget _buildCartItem(BuildContext context,Product product){
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -252,7 +255,9 @@ class CartScreen extends StatelessWidget {
       barrierColor: Colors.black54,
     );
   }
-  Widget _buildCartSummery(BuildContext context){
+  Widget _buildCartSummery(BuildContext context, List<Product> products){
+    final total = products.fold<double>(0, (sum, item) => sum + item.price);
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -275,14 +280,14 @@ class CartScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Total (6 items)',
+                'Total (${products.length} items)',
                 style: AppTextstyles.withColor(
                 AppTextstyles.bodyMedium,
                 Theme.of(context).textTheme.bodyLarge!.color!,
                 ),
               ),
               Text(
-                '\$473.94',
+                '\$${total.toStringAsFixed(2)}',
                 style: AppTextstyles.withColor(
                 AppTextstyles.h2,
                 Theme.of(context).primaryColor,

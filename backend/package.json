@@ -1,0 +1,15 @@
+{
+  "name": "okok-mobile-backend",
+  "version": "1.0.0",
+  "description": "Express backend with text-file data store for OKOK mobile app",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node src/server.js",
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "morgan": "^1.10.0"
+  }
+}

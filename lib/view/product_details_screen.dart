@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shoes_app/controlllers/product_controller.dart';
 import 'package:shoes_app/models/product.dart';
 import 'package:shoes_app/utils/app_textstyles.dart';
 import 'package:shoes_app/view/widgets/size_selector.dart';
@@ -10,6 +12,7 @@ class ProductDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ProductController productController = Get.find<ProductController>();
     final screenSize = MediaQuery.of(context).size;
     final screenWidth = screenSize.width;
     final screenHeight = screenSize.height;
@@ -62,7 +65,7 @@ class ProductDetailsScreen extends StatelessWidget {
                 ),
                 Positioned(
                   child: IconButton(
-                    onPressed: (){}, 
+                    onPressed: () => productController.toggleFavorite(product.id), 
                     icon: Icon(
                       product.isFavorite
                         ? Icons.favorite

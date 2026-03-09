@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/instance_manager.dart';
 import 'package:shoes_app/utils/app_textstyles.dart';
 import 'package:shoes_app/view/edit%20profile/views/widgets/profile_form.dart';
 import 'package:shoes_app/view/edit%20profile/views/widgets/profile_image.dart';
